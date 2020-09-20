@@ -7,13 +7,11 @@ public class LevelGenerator : MonoBehaviour {
 
     [SerializeField]
     private GameObject wallBlockPrefab;
-
     [SerializeField]
     private Transform levelParent;
-
     [SerializeField]
     private GameObject pellet;
-
+    
     [SerializeField]
     private Sprite outWall;
     [SerializeField]
@@ -24,12 +22,19 @@ public class LevelGenerator : MonoBehaviour {
     private Sprite inCorner;
     [SerializeField]
     private Sprite tJunction;
+
     [SerializeField]
     private Sprite square;
     [SerializeField]
     private bool useSquare;
 
+    [SerializeField]
+    private GameObject player;
+
     private List<SpriteRenderer> wallSprites;
+
+    private Dictionary<Vector2Int, GameObject> allPellets = new Dictionary<Vector2Int, GameObject>();
+    public Dictionary<Vector2Int, GameObject> AllPellets { get { return allPellets; } }
 
     int[,] levelMap = {
         {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
@@ -82,6 +87,14 @@ public class LevelGenerator : MonoBehaviour {
         for (int i = 1; i < 5; i++) {
             GenMap(i);
         }
+
+        Player playerController = Instantiate<GameObject>(player, allPellets[new Vector2Int(1,1)].transform.position, new Quaternion(0,0,0,0)).GetComponent<Player>();
+        playerController.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+        playerController.AddNavPoint(allPellets[new Vector2Int(1,1)]);
+        playerController.AddNavPoint(allPellets[new Vector2Int(1,6)]);
+        playerController.AddNavPoint(allPellets[new Vector2Int(5,6)]);
+        playerController.AddNavPoint(allPellets[new Vector2Int(5,1)]);
+        playerController.StartNavigation();
 
         // for (int x = 0; x < allElements.GetLength(0); x++) {
         //     string line = "";
@@ -169,6 +182,14 @@ public class LevelGenerator : MonoBehaviour {
                 // Normal Pellet
                 GameObject newPellet = Instantiate(pellet, position, new Quaternion(), levelParent);
                 newPellet.transform.localScale = new Vector3(0.1f, 0.1f, 1);
+
+                // Debug
+                newPellet.AddComponent<BoxCollider2D>();
+                BlockDebug debug = newPellet.AddComponent<BlockDebug>();
+                debug.SetPos(new Vector2Int(x, y));
+
+                // Add pellets to list
+                if(!allPellets.ContainsKey(new Vector2Int(x,y))) allPellets.Add(new Vector2Int(x, y), newPellet);
             break;
             case 6:
                 // Power Pellet
@@ -176,6 +197,11 @@ public class LevelGenerator : MonoBehaviour {
                 newPPellet.transform.localScale = new Vector3(0.1f, 0.1f, 1);
                 Pellet pelletScript = newPPellet.GetComponent<Pellet>();
                 pelletScript.ConvertToPowerPellet();
+
+                // Debug
+                newPPellet.AddComponent<BoxCollider2D>();
+                BlockDebug pdebug = newPPellet.AddComponent<BlockDebug>();
+                pdebug.SetPos(new Vector2Int(x, y));
             break;
             case 7:
                 // T Junction
