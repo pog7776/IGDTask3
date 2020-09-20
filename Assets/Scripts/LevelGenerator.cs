@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class LevelGenerator : MonoBehaviour {
 
@@ -23,6 +24,12 @@ public class LevelGenerator : MonoBehaviour {
     private Sprite inCorner;
     [SerializeField]
     private Sprite tJunction;
+    [SerializeField]
+    private Sprite square;
+    [SerializeField]
+    private bool useSquare;
+
+    private List<SpriteRenderer> wallSprites;
 
     int[,] levelMap = {
         {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
@@ -62,31 +69,63 @@ public class LevelGenerator : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        wallSprites = new List<SpriteRenderer>();
+
+        if(useSquare) {
+            outWall = square;
+            outCorner = square;
+            inCorner = square;
+            inWall = square;
+            tJunction = square;
+        }
+
         for (int i = 1; i < 5; i++) {
             GenMap(i);
         }
+
+        // for (int x = 0; x < allElements.GetLength(0); x++) {
+        //     string line = "";
+        //     for (int y = 0; y < allElements.GetLength(1); y++) {
+        //         line += allElements[x,y] + " ";
+        //     }
+        //     debug.text += line + "\n";
+        // }
+    }
+
+    void Update() {
+        // Color newColour = new Color(Random.Range(0f,1f),Random.Range(0f,1f), Random.Range(0f,1f), 1);
+        // foreach(SpriteRenderer sprite in wallSprites) {
+        //     sprite.color = newColour;
+        // }
     }
 
     private void GenMap(int quarter) {
         GameObject parent = new GameObject("Quarter " + quarter);
         switch (quarter) {
             case 1:
+                // Top Left
                 for (int x = 0; x < levelMap.GetLength(0); x++) {
                     for (int y = 0; y < levelMap.GetLength(1); y++) {
                         Vector3 position = new Vector3(y, -x, 0);
                         PlaceBlock(x, y, position, parent.transform, levelMap);
+
+                        //allElements[x,y] = levelMap[x,y];
                     }
                 }
             break;
             case 2:
+            // Top Right
                 for (int x = levelMap.GetLength(0)-1; x >= 0; x--) {
                     for (int y = levelMap.GetLength(1)-1; y >= 0; y--) {
                         Vector3 position = new Vector3((levelMap.GetLength(1) + (levelMap.GetLength(1) - y))-1, -x, 0);
                         PlaceBlock(x, y, position, parent.transform, levelMap);
+                        
+                        //allElements[levelMap.GetLength(0)+(levelMap.GetLength(0)-x),y] = levelMap[x,y];
                     }
                 }
             break;
             case 3:
+            // Bottom Left
                 for (int x = 0; x < levelMap.GetLength(0); x++) {
                     for (int y = levelMap.GetLength(1)-1; y >= 0; y--) {
                         Vector3 position = new Vector3(y, -levelMap.GetLength(1) + (-levelMap.GetLength(0)) + x, 0);
@@ -95,6 +134,7 @@ public class LevelGenerator : MonoBehaviour {
                 }
             break;
             case 4:
+            // Bottom Right
                 for (int x = levelMap.GetLength(0)-1; x >= 0; x--) {
                     for (int y = levelMap.GetLength(1)-1; y >= 0; y--) {
                         Vector3 position = new Vector3((levelMap.GetLength(1) + (levelMap.GetLength(1) - y))-1, -(levelMap.GetLength(0) + (levelMap.GetLength(0) - x))+1, 0);
@@ -154,8 +194,9 @@ public class LevelGenerator : MonoBehaviour {
         // Create Sprite
         SpriteRenderer sr = block.AddComponent<SpriteRenderer>();
         sr.sprite = sprite;
+        wallSprites.Add(sr);
         // Scale and position
-        block.transform.localScale = new Vector3(0.2f, 0.2f, 1);
+        block.transform.localScale = useSquare ? new Vector3(0.2f, 0.2f, 1) : new Vector3(0.1f, 0.1f, 1);
         block.transform.position = new Vector3(position.x, position.y, 0);
 
         block.AddComponent<BoxCollider2D>();
