@@ -1,31 +1,10 @@
 fileFormatVersion: 2
-guid: 0dec2b7bfd7aea34a9afeae9291648f6
+guid: 4647a9158b10333459d83f78c9ada9a1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2077760981032839843
-    second: Power_Pellet_0
-  - first:
-      213: 306621972079795244
-    second: Power_Pellet_1
-  - first:
-      213: 2757326708678242127
-    second: Power_Pellet_2
-  - first:
-      213: 3248006942215059171
-    second: Power_Pellet_3
-  - first:
-      213: 816259299172612173
-    second: Power_Pellet_0
-  - first:
-      213: 4059618832542024736
-    second: Power_Pellet_1
-  - first:
-      213: 4134773491819107073
-    second: Power_Pellet_2
-  - first:
-      213: 697771723474493230
-    second: Power_Pellet_3
+      213: -9221068390683459162
+    second: debug_compass_0
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -70,7 +49,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 81, y: 108, z: 68, w: 86}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -110,85 +89,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Power_Pellet_0
+      name: debug_compass_0
       rect:
         serializedVersion: 2
-        x: 160
-        y: 1184
-        width: 704
-        height: 864
-      alignment: 9
-      pivot: {x: 0.5, y: 0.4}
+        x: 80
+        y: 105
+        width: 347
+        height: 309
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d48fac3028fe35b00800000000000000
-      internalID: 816259299172612173
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Power_Pellet_1
-      rect:
-        serializedVersion: 2
-        x: 1184
-        y: 1184
-        width: 704
-        height: 864
-      alignment: 9
-      pivot: {x: 0.5, y: 0.4}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0244725c1d9a65830800000000000000
-      internalID: 4059618832542024736
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Power_Pellet_2
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 160
-        width: 704
-        height: 864
-      alignment: 9
-      pivot: {x: 0.5, y: 0.4}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1035496759aa16930800000000000000
-      internalID: 4134773491819107073
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Power_Pellet_3
-      rect:
-        serializedVersion: 2
-        x: 1184
-        y: 160
-        width: 704
-        height: 864
-      alignment: 9
-      pivot: {x: 0.5, y: 0.4}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e2f52008fabfea900800000000000000
-      internalID: 697771723474493230
+      spriteID: 6a1cabb672f280080800000000000000
+      internalID: -9221068390683459162
       vertices: []
       indices: 
       edges: []
