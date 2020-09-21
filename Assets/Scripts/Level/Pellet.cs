@@ -7,6 +7,7 @@ public class Pellet : MonoBehaviour {
     [SerializeField]
     private Animator animator;
 
+    [SerializeField]
     private bool isPowerPellet;
 
     // Start is called before the first frame update

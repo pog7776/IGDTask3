@@ -114,6 +114,7 @@ public class LevelGenerator : MonoBehaviour {
 
     private void GenMap(int quarter) {
         GameObject parent = new GameObject("Quarter " + quarter);
+        parent.transform.parent = levelParent;
         switch (quarter) {
             case 1:
                 // Top Left
@@ -283,7 +284,7 @@ public class LevelGenerator : MonoBehaviour {
             //Debug.Log(pos.x + " " + pos.y);
         } else if(CheckForEmpty(pos.x-1, pos.y)) {
             rotation = rotation * -1;
-            Debug.Log((pos.x-1) + " " + (pos.y));
+            //Debug.Log((pos.x-1) + " " + (pos.y));
         }
 
         // Apply new Rotation
