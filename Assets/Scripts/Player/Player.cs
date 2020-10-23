@@ -20,7 +20,7 @@ public class Player : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(navPoints.Count != 0 && startPos != null && endPos != null) {
-            MoveToPoint(startPos, endPos, duration);
+            //MoveToPoint(startPos, endPos, duration);
         }
     }
 
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour {
             gameObject.transform.localPosition = Vector3.Lerp(startPos, endPos, timeFraction);
         } else {
             gameObject.transform.localPosition = endPos;
-            StartNavigation();
+            //StartNavigation();
         }
     }
 

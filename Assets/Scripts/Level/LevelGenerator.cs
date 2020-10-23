@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+//! This script is a mess!
 public class LevelGenerator : MonoBehaviour {
+
+    [SerializeField]
+    private Color wallColour = new Color(1,1,1,1);
 
     [SerializeField]
     private GameObject wallBlockPrefab;
@@ -33,6 +37,9 @@ public class LevelGenerator : MonoBehaviour {
 
     private List<SpriteRenderer> wallSprites;
 
+    //! Turns out this just records the first quarter, sort it out dumbass
+    // TODO Use get all with tag after instantiation?
+    // Do i even need a list of them all?
     private Dictionary<Vector2Int, GameObject> allPellets = new Dictionary<Vector2Int, GameObject>();
     public Dictionary<Vector2Int, GameObject> AllPellets { get { return allPellets; } }
 
@@ -54,24 +61,6 @@ public class LevelGenerator : MonoBehaviour {
         {0,0,0,0,0,0,5,0,0,0,4,0,0,0}
     };
 
-    int[,] levelMapClosed = {
-        {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
-        {2,5,5,5,5,5,5,5,5,5,5,5,5,4},
-        {2,5,3,4,4,3,5,3,4,4,4,3,5,4},
-        {2,6,4,0,0,4,5,4,0,0,0,4,5,4},
-        {2,5,3,4,4,3,5,3,4,4,4,3,5,3},
-        {2,5,5,5,5,5,5,5,5,5,5,5,5,5},
-        {2,5,3,4,4,3,5,3,3,5,3,4,4,4},
-        {2,5,3,4,4,3,5,4,4,5,3,4,4,3},
-        {2,5,5,5,5,5,5,4,4,5,5,5,5,4},
-        {1,2,2,2,2,1,5,4,3,4,4,3,0,4},
-        {0,0,0,0,0,2,5,4,3,4,4,3,0,3},
-        {0,0,0,0,0,2,5,4,4,0,0,0,0,0},
-        {0,0,0,0,0,2,5,4,4,0,3,4,4,4},
-        {2,2,2,2,2,1,5,3,3,0,4,0,0,0},
-        {0,0,0,0,0,0,5,0,0,0,4,0,0,0}
-    };
-
     // Start is called before the first frame update
     void Start() {
         wallSprites = new List<SpriteRenderer>();
@@ -84,9 +73,13 @@ public class LevelGenerator : MonoBehaviour {
             tJunction = square;
         }
 
-        for (int i = 1; i < 5; i++) {
-            GenMap(i);
-        }
+
+        // Create the map
+        GenMap();
+
+        // for (int i = 1; i < 5; i++) {
+        //     GenMap(i);
+        // }
 
         Player playerController = Instantiate<GameObject>(player, allPellets[new Vector2Int(1,1)].transform.position, new Quaternion(0,0,0,0)).GetComponent<Player>();
         playerController.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
@@ -106,62 +99,80 @@ public class LevelGenerator : MonoBehaviour {
     }
 
     void Update() {
-        // Color newColour = new Color(Random.Range(0f,1f),Random.Range(0f,1f), Random.Range(0f,1f), 1);
-        // foreach(SpriteRenderer sprite in wallSprites) {
-        //     sprite.color = newColour;
-        // }
-    }
-
-    private void GenMap(int quarter) {
-        GameObject parent = new GameObject("Quarter " + quarter);
-        parent.transform.parent = levelParent;
-        switch (quarter) {
-            case 1:
-                // Top Left
-                for (int x = 0; x < levelMap.GetLength(0); x++) {
-                    for (int y = 0; y < levelMap.GetLength(1); y++) {
-                        Vector3 position = new Vector3(y, -x, 0);
-                        PlaceBlock(x, y, position, parent.transform, levelMap);
-
-                        //allElements[x,y] = levelMap[x,y];
-                    }
-                }
-            break;
-            case 2:
-            // Top Right
-                for (int x = levelMap.GetLength(0)-1; x >= 0; x--) {
-                    for (int y = levelMap.GetLength(1)-1; y >= 0; y--) {
-                        Vector3 position = new Vector3((levelMap.GetLength(1) + (levelMap.GetLength(1) - y))-1, -x, 0);
-                        PlaceBlock(x, y, position, parent.transform, levelMap);
-                        
-                        //allElements[levelMap.GetLength(0)+(levelMap.GetLength(0)-x),y] = levelMap[x,y];
-                    }
-                }
-            break;
-            case 3:
-            // Bottom Left
-                for (int x = 0; x < levelMap.GetLength(0); x++) {
-                    for (int y = levelMap.GetLength(1)-1; y >= 0; y--) {
-                        Vector3 position = new Vector3(y, -levelMap.GetLength(1) + (-levelMap.GetLength(0)) + x, 0);
-                        PlaceBlock(x, y, position, parent.transform, levelMapClosed);
-                    }
-                }
-            break;
-            case 4:
-            // Bottom Right
-                for (int x = levelMap.GetLength(0)-1; x >= 0; x--) {
-                    for (int y = levelMap.GetLength(1)-1; y >= 0; y--) {
-                        Vector3 position = new Vector3((levelMap.GetLength(1) + (levelMap.GetLength(1) - y))-1, -(levelMap.GetLength(0) + (levelMap.GetLength(0) - x))+1, 0);
-                        PlaceBlock(x, y, position, parent.transform, levelMapClosed);
-                    }
-                }
-            break;
-            default:
-            break;
+        //Color newColour = new Color(Random.Range(0f,1f),Random.Range(0f,1f), Random.Range(0f,1f), 1);
+        foreach(SpriteRenderer sprite in wallSprites) {
+            if(sprite) sprite.color = wallColour;
         }
     }
 
-    private void PlaceBlock(int x, int y, Vector3 position, Transform parent, int[,] mapArray) {
+    private void GenMap() {
+        GameObject parent = new GameObject("Quarter 1");
+        parent.transform.parent = levelParent;
+
+        // Create pelletParent
+        GameObject pelletParent = new GameObject("PelletParent");
+        pelletParent.transform.parent = parent.transform;
+
+        // First quarter
+        for (int x = 0; x < levelMap.GetLength(0); x++) {
+            for (int y = 0; y < levelMap.GetLength(1); y++) {
+                Vector3 position = new Vector3(y, -x, 0);
+                PlaceBlock(x, y, position, parent.transform, pelletParent.transform, levelMap);
+
+                //allElements[x,y] = levelMap[x,y];
+            }
+        }
+
+        // Duplicate and position the first quarter
+        for (int i = 2; i < 5; i++) {
+            GameObject newQuarter = Object.Instantiate(parent, levelParent);
+            newQuarter.transform.name = "Quarter " + i;
+            Quaternion newRot = newQuarter.transform.rotation;
+            
+            // Position and rotate
+            switch (i) {
+                case 2:
+                    newRot.eulerAngles += new Vector3(0,180,0);
+                    newQuarter.transform.position += new Vector3(27,0,0);
+
+                    // Remove the two top spawn doors
+                    foreach(GameObject wall in GameObject.FindGameObjectsWithTag("SpawnDoor")) {
+                        //Debug.Log("Destroying spawn door", wall);
+                        Destroy(wall);
+                    }
+                break;
+                case 3:
+                    newRot.eulerAngles += new Vector3(180,0,0);
+                    newQuarter.transform.position += new Vector3(0,-29,0);
+                break;
+                case 4:
+                    newRot.eulerAngles += new Vector3(180,180,0);
+                    newQuarter.transform.position += new Vector3(27,-29,0);
+                break;
+                default:
+                    Debug.LogError("You shouldn't be here");
+                break;
+            }
+            newQuarter.transform.rotation = newRot;
+        }
+
+        // Get all wall sprites
+        foreach(GameObject wall in GameObject.FindGameObjectsWithTag("Wall")) {
+            wallSprites.Add(wall.GetComponent<SpriteRenderer>());
+        }
+
+        foreach(GameObject wall in GameObject.FindGameObjectsWithTag("SpawnDoor")) {
+            if(wall) wallSprites.Add(wall.GetComponent<SpriteRenderer>());
+        }
+
+        // Make sure all pellets are upright
+        foreach (GameObject pellet in GameObject.FindGameObjectsWithTag("Pellet")) {
+            //Debug.Log(pellet.transform.rotation);
+            pellet.transform.rotation = Quaternion.identity;
+        }
+    }
+
+    private void PlaceBlock(int x, int y, Vector3 position, Transform parent, Transform pelletParent, int[,] mapArray) {
         switch (mapArray[x,y]) {
             case 1:
                 // Outside Corner
@@ -181,7 +192,7 @@ public class LevelGenerator : MonoBehaviour {
             break;
             case 5:
                 // Normal Pellet
-                GameObject newPellet = Instantiate(pellet, position, new Quaternion(), levelParent);
+                GameObject newPellet = Instantiate(pellet, position, new Quaternion(), pelletParent.transform);
                 newPellet.transform.localScale = new Vector3(0.1f, 0.1f, 1);
 
                 // Debug
@@ -194,7 +205,7 @@ public class LevelGenerator : MonoBehaviour {
             break;
             case 6:
                 // Power Pellet
-                GameObject newPPellet = Instantiate(pellet, position, new Quaternion(), levelParent);
+                GameObject newPPellet = Instantiate(pellet, position, new Quaternion(), pelletParent.transform);
                 newPPellet.transform.localScale = new Vector3(0.1f, 0.1f, 1);
                 Pellet pelletScript = newPPellet.GetComponent<Pellet>();
                 pelletScript.ConvertToPowerPellet();
@@ -210,6 +221,12 @@ public class LevelGenerator : MonoBehaviour {
             break;
             default:
                 //Nothing
+
+                // Check if it's the underside of the spawn room
+                if(x == 12 && y == 13) {
+                    GameObject spawnDoor = HandleStraight(CreateWall(inWall, position, parent, new Vector2Int(x, y)), new Vector2Int(x, y));
+                    spawnDoor.tag = "SpawnDoor";
+                }
             break;
         }
     }
@@ -218,10 +235,12 @@ public class LevelGenerator : MonoBehaviour {
         // Create block
         GameObject block = new GameObject();
         block.transform.parent = parent;
+        block.tag = "Wall";
         // Create Sprite
         SpriteRenderer sr = block.AddComponent<SpriteRenderer>();
         sr.sprite = sprite;
-        wallSprites.Add(sr);
+        //wallSprites.Add(sr);
+        sr.color = wallColour;
         // Scale and position
         block.transform.localScale = useSquare ? new Vector3(0.2f, 0.2f, 1) : new Vector3(0.1f, 0.1f, 1);
         block.transform.position = new Vector3(position.x, position.y, 0);
@@ -230,10 +249,15 @@ public class LevelGenerator : MonoBehaviour {
         BlockDebug debug = block.AddComponent<BlockDebug>();
         debug.SetPos(gridPos);
 
+        // Hacky handle weird block
+        if(gridPos == new Vector2Int(0, 13)) {
+            block.transform.Rotate(new Vector3(0,0,-90));
+        }
+
         return block;
     }
 
-    private void HandleStraight(GameObject block, Vector2Int pos) {
+    private GameObject HandleStraight(GameObject block, Vector2Int pos) {
         if(pos.x > 0 && pos.x < levelMap.GetLength(0)-1) {
             if(CheckForEmpty(pos.x-1, pos.y) || CheckForEmpty(pos.x+1, pos.y)) {
                 Quaternion newRot = block.transform.rotation;
@@ -253,9 +277,10 @@ public class LevelGenerator : MonoBehaviour {
                 block.transform.rotation = newRot;
             }
         }
+        return block;
     }
 
-    private void HandleCorner(GameObject block, Vector2Int pos) {
+    private GameObject HandleCorner(GameObject block, Vector2Int pos) {
         float rotation = 0;
 
         // Add 90 to rotation if pos below is empty
@@ -287,10 +312,22 @@ public class LevelGenerator : MonoBehaviour {
             //Debug.Log((pos.x-1) + " " + (pos.y));
         }
 
+
+        // Handle weird blocks <3
+        if (pos == new Vector2Int(7, 13)) {
+            rotation = -90;
+        }
+
+        if (pos == new Vector2Int(9, 8)) {
+            rotation = 90;
+        }
+
         // Apply new Rotation
         Quaternion newRot = block.transform.rotation;
         newRot.eulerAngles = new Vector3(0,0,rotation);
         block.transform.rotation = newRot;
+
+        return block;
     }
 
 
