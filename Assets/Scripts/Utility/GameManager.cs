@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     public GhostManager ghostManager;
 
+    [SerializeField]
+    public GameUI gameUI;
+
 
     // Set instance
 	private static GameManager _instance;

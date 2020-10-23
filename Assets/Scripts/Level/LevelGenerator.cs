@@ -81,13 +81,16 @@ public class LevelGenerator : MonoBehaviour {
         //     GenMap(i);
         // }
 
-        Player playerController = Instantiate<GameObject>(player, allPellets[new Vector2Int(1,1)].transform.position, new Quaternion(0,0,0,0)).GetComponent<Player>();
-        playerController.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+        GameObject playerController = Instantiate<GameObject>(player, allPellets[new Vector2Int(1,1)].transform.position, new Quaternion(0,0,0,0));
+        playerController.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        /*
+        playerController.gameObject.AddComponent<PacStudentController>();
         playerController.AddNavPoint(allPellets[new Vector2Int(1,1)]);
         playerController.AddNavPoint(allPellets[new Vector2Int(1,6)]);
         playerController.AddNavPoint(allPellets[new Vector2Int(5,6)]);
         playerController.AddNavPoint(allPellets[new Vector2Int(5,1)]);
         playerController.StartNavigation();
+        */
 
         // for (int x = 0; x < allElements.GetLength(0); x++) {
         //     string line = "";
@@ -196,7 +199,7 @@ public class LevelGenerator : MonoBehaviour {
                 newPellet.transform.localScale = new Vector3(0.1f, 0.1f, 1);
 
                 // Debug
-                newPellet.AddComponent<BoxCollider2D>();
+                //newPellet.AddComponent<BoxCollider2D>();
                 BlockDebug debug = newPellet.AddComponent<BlockDebug>();
                 debug.SetPos(new Vector2Int(x, y));
 
@@ -211,7 +214,7 @@ public class LevelGenerator : MonoBehaviour {
                 pelletScript.ConvertToPowerPellet();
 
                 // Debug
-                newPPellet.AddComponent<BoxCollider2D>();
+                //newPPellet.AddComponent<BoxCollider2D>();
                 BlockDebug pdebug = newPPellet.AddComponent<BlockDebug>();
                 pdebug.SetPos(new Vector2Int(x, y));
             break;
